@@ -301,7 +301,8 @@ def parseAndShuffleLetters(input):
   return ''.join(threeLetters)
 
 
-input = parseAndShuffleLetters('ADA')
-if len(sys.argv) > 1:
-  input = parseAndShuffleLetters(str(sys.argv[1]))
-GEBify(input[0], input[1], input[2]).write('geb.scad')
+if __name__ == '__main__':
+  input = parseAndShuffleLetters('ADA')
+  if len(sys.argv) > 1:
+    input = parseAndShuffleLetters(str(sys.argv[1]))
+  GEBify(input[0], input[1], input[2]).write('geb.scad')
