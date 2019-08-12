@@ -102,3 +102,12 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Julia's stuff
+.DS_Store
+*.scad
+*.stl
+*.rtf
+STLs\ to\ print/
+content\ for\ talk/
+pybay/
