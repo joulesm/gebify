@@ -267,20 +267,22 @@ def manualGEBify(letter1, letter2, letter3):
           yz(r0(letters[letter2]).linear_extrude(unit_size)) &
           zx(r0(letters[letter3]).linear_extrude(unit_size)))
 
-# Takes 3 letters, randomizes the orientations, and returns the boolean
+# Takes 3 letters, randomizes the orientations
+# Returns the intersection of the letters and the orientations as an array.
 def GEBify(letter1, letter2, letter3):
   orientations = [r0, r90, r180, r270]
   numOrientations = len(orientations)
-  return (xy(orientations[random.randrange(numOrientations)](letters[letter1]).linear_extrude(unit_size)) &
-          yz(orientations[random.randrange(numOrientations)](letters[letter2]).linear_extrude(unit_size)) &
-          zx(orientations[random.randrange(numOrientations)](letters[letter3]).linear_extrude(unit_size)))
+  pickOrientations = [random.randrange(numOrientations), random.randrange(numOrientations), random.randrange(numOrientations)]
+  return [
+          (xy(orientations[pickOrientations[0]](letters[letter1]).linear_extrude(unit_size)) &
+          yz(orientations[pickOrientations[1]](letters[letter2]).linear_extrude(unit_size)) &
+          zx(orientations[pickOrientations[2]](letters[letter3]).linear_extrude(unit_size))) , pickOrientations ]
 
 #manualGEBify('J', 'S', 'M').write('geb.scad') # 0, 90, 0
 #manualGEBify('J', 'S', 'A').write('geb.scad') # 0, 90, 0
 #manualGEBify('P', 'S', 'E').write('geb.scad') # 180, 90, 0
 #manualGEBify('B', 'G', 'E').write('geb.scad') # 0, 0, 180
 #manualGEBify('B', 'G', 'E').write('geb.scad') # 90, 0, 0
-#GEBify('H', 'H', 'C').write('geb.scad') #
 
 # Returns 3 random letters of the alphabet
 def randomPickThree():
@@ -305,4 +307,6 @@ if __name__ == '__main__':
   input = parseAndShuffleLetters('ADA')
   if len(sys.argv) > 1:
     input = parseAndShuffleLetters(str(sys.argv[1]))
-  GEBify(input[0], input[1], input[2]).write('geb.scad')
+
+gebbed = GEBify(input[0], input[1], input[2])
+gebbed[0].write('geb.scad')
