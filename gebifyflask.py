@@ -22,8 +22,19 @@ def gebifyFromTweet():
   filename = str(int(time.time()))
   print "filename: " + filename
   print json.dumps(request.json)
-  print request.json['gebtext']
-  input = parseAndShuffleLetters(request.json['gebtext'])
+  print "the tweet text is: " + request.json['gebtext']
+  splittext = request.json['gebtext'].split(' ')
+  final_word = None
+  for word in splittext:
+    if word.isalpha():
+      final_word = word
+      break
+  if final_word == None:
+    print 'no word to parse'
+    return 'fail'
+  
+  print final_word 
+  input = parseAndShuffleLetters(final_word)
   GEBify(input[0], input[1], input[2]).write('scad/' + filename + '.scad')
   subprocess.call(['/usr/bin/openscad',
                   'scad/' + filename + '.scad',
@@ -34,7 +45,10 @@ def gebifyFromTweet():
   #with urllib.request.urlopen(url) as f:
   #  print(f.read().decode('utf-8'))
   url = 'http://localhost:3002/stl_ready'
-  values = {'filename': filename + '.stl'}
+  values = {'filename': filename + '.stl', 
+            'link': request.json['geblink'],
+            'user': request.json['gebuser'] }
+  #          'tweet': request.json['gebtweet'] }
   data = urllib.urlencode(values)
   response = urllib2.urlopen(url + '?' + data)
   res_content = response.read()
