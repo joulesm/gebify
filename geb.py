@@ -310,3 +310,4 @@ if __name__ == '__main__':
 
 gebbed = GEBify(input[0], input[1], input[2])
 gebbed[0].write('geb.scad')
+#print(gebbed[1])
