@@ -35,8 +35,9 @@ def gebifyFromTweet():
   
   print final_word 
   input = parseAndShuffleLetters(final_word)
-  rotations = GEBify(input[0], input[1], input[2]).write('scad/' + filename + '.scad')
-  print rotations
+  geb_response = GEBify(input[0], input[1], input[2])
+  geb_response[0].write('scad/' + filename + '.scad')
+  print geb_response[1]
   subprocess.call(['/usr/bin/openscad',
                   'scad/' + filename + '.scad',
                   '--o',

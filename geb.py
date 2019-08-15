@@ -308,6 +308,6 @@ if __name__ == '__main__':
   if len(sys.argv) > 1:
     input = parseAndShuffleLetters(str(sys.argv[1]))
 
-gebbed = GEBify(input[0], input[1], input[2])
-gebbed[0].write('geb.scad')
+#gebbed = GEBify(input[0], input[1], input[2])
+#gebbed[0].write('geb.scad')
 #print(gebbed[1])
