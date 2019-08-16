@@ -1,3 +1,4 @@
+import flask
 from flask import Flask, request  
 import subprocess
 import time
@@ -12,18 +13,28 @@ from geb import *
 
 app = Flask(__name__)
  
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/process/', methods=['POST'])
 def gebifyFromTweet():
   #multi_dict = request.args
   #for key in multi_dict:
   #  print 'key:' + multi_dict.get(key)
   #  print 'val:' + multi_dict.getlist(key)
-  print request
+  #print request
   filename = str(int(time.time()))
-  print "filename: " + filename
-  print json.dumps(request.json)
-  print "the tweet text is: " + request.json['gebtext']
-  splittext = request.json['gebtext'].split(' ')
+  #print "filename: " + filename
+  
+  print request.method
+  if request.method == 'GET':
+    print request.args.get('gebtext')
+    splittext = request.args.get('gebtext').split(' ')
+    link = request.args.get('geblink')
+    user = request.args.get('gebuser')
+  else:
+    print json.dumps(request.json) 
+    splittext = request.json['gebtext'].split(' ')
+    link = request.json['geblink']
+    user = request.json['gebuser']
+  
   final_word = None
   for word in splittext:
     if word.isalpha():
@@ -36,10 +47,11 @@ def gebifyFromTweet():
   print final_word 
   input = parseAndShuffleLetters(final_word)
   geb_response = GEBify(input[0], input[1], input[2])
-  geb_response[0].write('scad/' + filename + '.scad')
+  full_scad_file_path = '/home/person/code/gebify/gebify-flask/scad/' + filename + '.scad'
+  geb_response[0].write(full_scad_file_path)
   print geb_response[1]
   subprocess.call(['/usr/bin/openscad',
-                  'scad/' + filename + '.scad',
+                  full_scad_file_path,
                   '--o',
                   '/home/person/code/gebify/gebify-node/public/stl/' + filename + '.stl'])
   #params = urllib.parse.urlencode({'filename': filename + '.stl'})
@@ -48,8 +60,8 @@ def gebifyFromTweet():
   #  print(f.read().decode('utf-8'))
   url = 'http://localhost:3002/stl_ready'
   values = {'filename': filename + '.stl', 
-            'link': request.json['geblink'],
-            'user': request.json['gebuser'] }
+            'link': link,
+            'user': user}
   #          'tweet': request.json['gebtweet'] }
   data = urllib.urlencode(values)
   response = urllib2.urlopen(url + '?' + data)
